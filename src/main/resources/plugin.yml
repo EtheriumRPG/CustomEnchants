@@ -1,0 +1,12 @@
+main: es.mc.shylex96.CustomEnchants
+version: 4.0.0
+name: CustomEnchants
+author: Shylex96
+api-version: 1.13
+commands:
+  giveautosmelter:
+    description: Give Autosmelter enchantment to the item in hand.
+  giveveinminer:
+    description: Give VeinMiner enchantment to the item in hand.
+  givetreecapitator:
+    description: Give Treecapitator enchantment to the item in hand.
