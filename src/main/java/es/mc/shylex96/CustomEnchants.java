@@ -18,10 +18,10 @@ public class CustomEnchants extends JavaPlugin {
     public void onEnable() {
         this.getCommand("giveautosmelter").setExecutor(new GiveAutoSmelterCommand());
         this.getCommand("giveveinminer").setExecutor(new GiveVeinMinerCommand());
-        this.getCommand("givetreecapitator").setExecutor(new GiveTreecapitatorCommand());
+        // this.getCommand("givetreecapitator").setExecutor(new GiveTreecapitatorCommand());
         getServer().getPluginManager().registerEvents(new AutoSmelterListener(), this);
         getServer().getPluginManager().registerEvents(new VeinMinerListener(), this);
-        getServer().getPluginManager().registerEvents(new TreecapitatorListener(), this);
+        // getServer().getPluginManager().registerEvents(new TreecapitatorListener(), this);
 
         Bukkit.getConsoleSender().sendMessage(prefix +
                 " §7Plugin creado por §eShylex §7ha cargado correctamente en la versión: §c" + version);
