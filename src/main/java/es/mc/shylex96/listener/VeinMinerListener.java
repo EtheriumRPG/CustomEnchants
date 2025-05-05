@@ -17,8 +17,8 @@ import java.util.regex.Pattern;
 public class VeinMinerListener implements Listener {
     private static final String ENCHANTMENT_NAME_1 = "Pico Primordial";
     private static final String ENCHANTMENT_NAME_2 = "Pico Eterno";
-    private static final int MAX_PRIMORDIAL_BLOCKS = 16;
-    private static final int MAX_ETERNAL_BLOCKS = 32;
+    private static final int MAX_PRIMORDIAL_BLOCKS = 12;
+    private static final int MAX_ETERNAL_BLOCKS = 24;
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
