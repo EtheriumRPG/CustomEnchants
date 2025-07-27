@@ -19,6 +19,26 @@ public class VeinMinerListener implements Listener {
     private static final String ENCHANTMENT_NAME_2 = "Pico Eterno";
     private static final int MAX_PRIMORDIAL_BLOCKS = 12;
     private static final int MAX_ETERNAL_BLOCKS = 24;
+    private static final Set<Material> MINERAL_BLOCKS = Set.of(
+            Material.COAL_ORE,
+            Material.DEEPSLATE_COAL_ORE,
+            Material.COPPER_ORE,
+            Material.DEEPSLATE_COPPER_ORE,
+            Material.IRON_ORE,
+            Material.DEEPSLATE_IRON_ORE,
+            Material.GOLD_ORE,
+            Material.DEEPSLATE_GOLD_ORE,
+            Material.DIAMOND_ORE,
+            Material.DEEPSLATE_DIAMOND_ORE,
+            Material.EMERALD_ORE,
+            Material.DEEPSLATE_EMERALD_ORE,
+            Material.REDSTONE_ORE,
+            Material.DEEPSLATE_REDSTONE_ORE,
+            Material.LAPIS_ORE,
+            Material.DEEPSLATE_LAPIS_ORE,
+            Material.NETHER_QUARTZ_ORE,
+            Material.NETHER_GOLD_ORE
+    );
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
@@ -61,64 +81,43 @@ public class VeinMinerListener implements Listener {
 
     private void dropItems(Block block, ItemStack item) {
         Material material = block.getType();
-        //Bukkit.getConsoleSender().sendMessage("[VeinMiner] Dropping items for block type: " + material);
-
-        // Obtener el nivel de Fortuna del lore
-        ItemStack itemToDrop = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
 
+        int fortuneLevel = 0;
         if (meta != null) {
-            List<String> lore = meta.getLore();
-            int fortuneLevel = getFortuneLevelFromLore(lore);
-            //Bukkit.getConsoleSender().sendMessage("[VeinMiner] Fortune level: " + fortuneLevel);
+            fortuneLevel = getFortuneLevelFromLore(meta.getLore());
+        }
 
-            // Calcular los ítems que se obtendrían al romper el bloque normalmente
-            List<ItemStack> drops = new ArrayList<>();
-            switch (material) {
-                case COAL_ORE:
-                    drops.add(new ItemStack(Material.COAL, calculateAmount(Material.COAL_ORE, fortuneLevel)));
-                    break;
-                case IRON_ORE:
-                    drops.add(new ItemStack(Material.IRON_INGOT, calculateAmount(Material.IRON_ORE, fortuneLevel)));
-                    break;
-                case GOLD_ORE:
-                    drops.add(new ItemStack(Material.GOLD_INGOT, calculateAmount(Material.GOLD_ORE, fortuneLevel)));
-                    break;
-                case DIAMOND_ORE:
-                    drops.add(new ItemStack(Material.DIAMOND, calculateAmount(Material.DIAMOND_ORE, fortuneLevel)));
-                    break;
-                case EMERALD_ORE:
-                    drops.add(new ItemStack(Material.EMERALD, calculateAmount(Material.EMERALD_ORE, fortuneLevel)));
-                    break;
-                case REDSTONE_ORE:
-                    drops.add(new ItemStack(Material.REDSTONE, calculateAmount(Material.REDSTONE_ORE, fortuneLevel)));
-                    break;
-                case LAPIS_ORE:
-                    drops.add(new ItemStack(Material.LAPIS_LAZULI, calculateAmount(Material.LAPIS_ORE, fortuneLevel)));
-                    break;
-                case NETHER_QUARTZ_ORE:
-                    drops.add(new ItemStack(Material.QUARTZ, calculateAmount(Material.NETHER_QUARTZ_ORE, fortuneLevel)));
-                    break;
-                case STONE:
-                    drops.add(new ItemStack(Material.COBBLESTONE, calculateAmount(Material.STONE, fortuneLevel)));
-                    break;
-                // Agregar más casos según sea necesario
-                default:
-                    // En caso de otros bloques que no tienen drops especiales, solo los drops por defecto
-                    drops.addAll(block.getDrops(item));
-                    break;
-            }
+        List<ItemStack> drops = new ArrayList<>();
 
-            // Soltar los ítems en el mundo
-            for (ItemStack drop : drops) {
-                block.getWorld().dropItemNaturally(block.getLocation(), drop);
+        if (MINERAL_BLOCKS.contains(material)) {
+            // Solo aplicar fortuna a minerales
+            Material dropType = switch (material) {
+                case COAL_ORE, DEEPSLATE_COAL_ORE -> Material.COAL;
+                case COPPER_ORE, DEEPSLATE_COPPER_ORE -> Material.COPPER_INGOT;
+                case IRON_ORE, DEEPSLATE_IRON_ORE -> Material.IRON_INGOT;
+                case GOLD_ORE, DEEPSLATE_GOLD_ORE, NETHER_GOLD_ORE -> Material.GOLD_INGOT;
+                case DIAMOND_ORE, DEEPSLATE_DIAMOND_ORE -> Material.DIAMOND;
+                case EMERALD_ORE, DEEPSLATE_EMERALD_ORE -> Material.EMERALD;
+                case REDSTONE_ORE, DEEPSLATE_REDSTONE_ORE -> Material.REDSTONE;
+                case LAPIS_ORE, DEEPSLATE_LAPIS_ORE -> Material.LAPIS_LAZULI;
+                case NETHER_QUARTZ_ORE -> Material.QUARTZ;
+                default -> null;
+            };
+
+            if (dropType != null) {
+                drops.add(new ItemStack(dropType, calculateAmount(material, fortuneLevel)));
             }
-            //Bukkit.getConsoleSender().sendMessage("[VeinMiner] Amount to drop: " + amount);
         } else {
-            //Bukkit.getConsoleSender().sendMessage("[VeinMiner] ItemMeta is null.");
+            // Si no es un mineral, dejar drops normales sin fortuna
+            drops.addAll(block.getDrops(item));
+        }
+
+        for (ItemStack drop : drops) {
+            block.getWorld().dropItemNaturally(block.getLocation(), drop);
         }
     }
-
+    
     private int getFortuneLevelFromLore(List<String> lore) {
         if (lore == null || lore.isEmpty()) {
             //Bukkit.getConsoleSender().sendMessage("[VeinMiner] Lore is null or empty.");

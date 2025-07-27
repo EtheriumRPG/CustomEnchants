@@ -20,6 +20,9 @@ import java.util.regex.Pattern;
 public class AutoSmelterListener implements Listener {
     private static final String ENCHANTMENT_NAME_1 = "Pico Astral";
     private static final String ENCHANTMENT_NAME_2 = "Pico Celestial";
+    private static final String ENCHANTMENT_NAME_3 = "Pico Primordial";
+    private static final String ENCHANTMENT_NAME_4 = "Pico Eterno";
+
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
@@ -30,7 +33,12 @@ public class AutoSmelterListener implements Listener {
             ItemStack itemInHand = event.getPlayer().getInventory().getItemInMainHand();
             ItemMeta meta = itemInHand.getItemMeta();
 
-            if (meta != null && (meta.getDisplayName().contains(ENCHANTMENT_NAME_1) || meta.getDisplayName().contains(ENCHANTMENT_NAME_2))) {
+            if (meta != null && (
+                    meta.getDisplayName().contains(ENCHANTMENT_NAME_1) ||
+                    meta.getDisplayName().contains(ENCHANTMENT_NAME_2) ||
+                    meta.getDisplayName().contains(ENCHANTMENT_NAME_3) ||
+                    meta.getDisplayName().contains(ENCHANTMENT_NAME_4)
+            )) {
             /*
             Objects.requireNonNull(event.getPlayer().getInventory().getItemInMainHand().getItemMeta()).getDisplayName().contains(ENCHANTMENT_NAME_1) ||
                         Objects.requireNonNull(event.getPlayer().getInventory().getItemInMainHand().getItemMeta()).getDisplayName().contains(ENCHANTMENT_NAME_2)
@@ -90,7 +98,7 @@ public class AutoSmelterListener implements Listener {
                 try {
                     // Convierte el número romano a decimal
                     //Bukkit.getConsoleSender().sendMessage("Extracted fortune level from lore: " + fortuneLevel);
-                    return RomanToDecimal.romanToDecimal(matcher.group(1)); // Retorna el nivel de Fortuna encontrado y termina el método
+                    return RomanToDecimal.romanToDecimal(matcher.group(1)); // Retorna el nivel de Fortuna encontrado
                 } catch (NumberFormatException e) {
                     //Bukkit.getConsoleSender().sendMessage("Error parsing fortune level: " + e.getMessage());
                 }
